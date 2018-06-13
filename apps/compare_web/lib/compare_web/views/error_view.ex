@@ -1,8 +1,8 @@
 defmodule CompareWeb.ErrorView do
   use CompareWeb, :view
 
-  def render("400.json", %{message: message}) do
-    %{errors: %{detail: message}}
+  def render("400.json", %{user: user, message: message}) do
+    %{errors: %{user: user, message: message}}
   end
 
   # If you want to customize a particular status code

@@ -17,13 +17,13 @@ defmodule Compare do
 
   def compare(user, other) do
     cond do
-      !Storage.exists?(user) -> {:error, "#{user} has not uploaded their schedule"}
-      !Storage.exists?(other) -> {:error, "#{other} has not uploaded their schedule"}
+      !Storage.exists?(user) -> {:error, {user, "has not uploaded their schedule"}}
+      !Storage.exists?(other) -> {:error, {other, "has not uploaded their schedule"}}
 
       true ->
         with {:ok, user_data} <- Storage.read(user),
              {:ok, other_data} <- Storage.read(other) do
-          process(:erlang.binary_to_term(user_data), :erlang.binary_to_term(other_data))
+          process(:erlang.binary_to_term(user_data, [:safe]), :erlang.binary_to_term(other_data, [:safe]))
         end
     end
   end
