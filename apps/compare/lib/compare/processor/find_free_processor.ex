@@ -22,7 +22,7 @@ defmodule Compare.Processor.FindFreeProcessor do
     {Time.new(event_start.hour, event_start.minute, 0) |> elem(1), Time.new(event_end.hour, event_end.minute, 0) |> elem(1)}
   end
 
-  @spec on_weekday?(ExIcal.Event, pos_integer) :: boolean
+  @spec on_weekday?(ExIcal.Event, 1..5) :: boolean
   defp on_weekday?(%{start: %{year: year, month: month, day: day}}, weekday) do
     Date.day_of_week(Date.new(year, month, day) |> elem(1)) == weekday
   end

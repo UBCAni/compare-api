@@ -26,7 +26,7 @@ defmodule Compare do
       {:error, "The weekday must be between 1-5"}
     end
 
-    Processor.compare(FindFreeProcessor, user, other, [weekday: weekday])
+    Processor.compare(FindFreeProcessor, user, other, weekday: weekday)
   end
 end
 
