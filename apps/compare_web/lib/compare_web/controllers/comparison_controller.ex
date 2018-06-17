@@ -15,8 +15,8 @@ defmodule CompareWeb.ComparisonController do
     end
   end
 
-  def free(conn, %{"user" => user, "other" => other, "weekday" => weekday}) when is_integer(weekday) do
-    with {:ok, result} <- Compare.find_free(user, other, weekday) do
+  def free(conn, %{"user" => user, "other" => other, "weekday" => weekday}) do
+    with {:ok, result} <- Compare.find_free(user, other, String.to_integer(weekday)) do
       render(conn, "free.json", Keyword.new(result))
     end
   end
