@@ -4,7 +4,7 @@ defmodule Compare.Processor do
   """
   alias Compare.Storage
 
-  @callback process([%ExIcal.Event{}], [%ExIcal.Event{}]) :: any
+  @callback process([%ExIcal.Event{}], [%ExIcal.Event{}], keyword) :: any
 
   @doc """
   Compare dynamically dispatches code to a processor, handling the common execution paths.
