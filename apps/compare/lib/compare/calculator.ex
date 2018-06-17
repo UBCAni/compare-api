@@ -3,7 +3,7 @@ defmodule Compare.Calculator do
   Free time calculator for the application
   """
 
-  @opaque interval :: {Time.t, Time.t}
+  @type interval :: {Time.t, Time.t}
   @typep accumulator :: {[interval], Time.t}
 
   @doc """
@@ -12,19 +12,20 @@ defmodule Compare.Calculator do
   ## Examples
 
      iex> a = [{~T[00:00:00], ~T[01:00:00]}, {~T[03:00:00], ~T[04:00:00]}]
-     [{~T[00:00:00], ~T[01:00:00]}, {~T[03:00:00], ~T[04:00:00]}]
      iex> b = [{~T[01:00:00], ~T[02:00:00]}]
-     [{~T[01:00:00], ~T[02:00:00]}]
      iex> Compare.Calculator.get_free_blocks(a, b)
-     [{~T[02:00:00], ~T[03:00:00]}]
+     %{start_time: ~T[00:00:00], end_time: ~T[04:00:00], blocks: [{~T[02:00:00], ~T[03:00:00]}]}
   """
-  @spec get_free_blocks([interval], [interval]) :: [interval]
-  def get_free_blocks([], []), do: [{~T[00:00:00.000], ~T[23:59:59.999]}]
+  @spec get_free_blocks([interval], [interval]) :: %{blocks: [interval], start_time: Time.t, end_time: Time.t}
+  def get_free_blocks([], []), do: %{blocks: [], start_time: ~T[00:00:00.000], end_time: ~T[23:59:59.999]}
   def get_free_blocks(a, b) do
     union = join(a, b)
-    elem(Enum.reduce(union, {[], elem(hd(union), 1)}, &create_free_block/2), 0)
+    [{h, t} | _] = union
+    {blocks, event_end} = Enum.reduce(union, {[], t}, &create_free_block/2)
+    %{blocks: blocks,
+      start_time: h,
+      end_time: event_end}
   end
-
 
   @spec create_free_block(interval, accumulator) :: accumulator
   defp create_free_block({event_start, event_end}, {result, last}) do

@@ -9,9 +9,15 @@ defmodule CompareWeb.ComparisonController do
     end
   end
 
-  def compare(conn, %{"user" => user, "other" => other}) do
-    with %{same: same} <- Compare.compare(user, other) do
-      render(conn, "compare.json", same: same)
+  def same(conn, %{"user" => user, "other" => other}) do
+    with {:ok, result} <- Compare.find_similar(user, other) do
+      render(conn, "result.json", result: result)
+    end
+  end
+
+  def free(conn, %{"user" => user, "other" => other, "weekday" => weekday}) do
+    with {:ok, result} <- Compare.find_free(user, other, weekday) do
+      render(conn, "free.json", Keyword.new(result))
     end
   end
 end

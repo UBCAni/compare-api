@@ -17,4 +17,10 @@ defmodule CompareWeb.FallbackController do
     |> put_status(:bad_request)
     |> render(CompareWeb.ErrorView, "400.json", user: user, message: message)
   end
+
+  def call(conn, {:error, message}) when is_bitstring(message) do
+    conn
+    |> put_status(:bad_request)
+    |> render(CompareWeb.ErrorView, "400.json", message: message)
+  end
 end

@@ -8,6 +8,8 @@ defmodule Compare do
   """
 
   alias Compare.Storage
+  alias Compare.Processor
+  alias Compare.Processor.{SimilarityProcessor, FindFreeProcessor}
 
   def upload(ical, user \\ "0") do
     data = ExIcal.parse(ical)
@@ -15,29 +17,16 @@ defmodule Compare do
     Storage.persist(file_data, user)
   end
 
-  def compare(user, other) do
-    cond do
-      !Storage.exists?(user) -> {:error, {user, "has not uploaded their schedule"}}
-      !Storage.exists?(other) -> {:error, {other, "has not uploaded their schedule"}}
+  def find_similar(user, other) do
+    Processor.compare(SimilarityProcessor, user, other)
+  end
 
-      true ->
-        with {:ok, user_data} <- Storage.read(user),
-             {:ok, other_data} <- Storage.read(other) do
-          process(:erlang.binary_to_term(user_data, [:safe]), :erlang.binary_to_term(other_data, [:safe]))
-        end
+  def find_free(user, other, weekday) do
+    if weekday not in 1..5 do
+      {:error, "The weekday must be between 1-5"}
     end
-  end
 
-  defp process(user, other) do
-    user_classes = Enum.map(user, &extract_summary/1) |> Enum.into(MapSet.new)
-    other_classes = Enum.map(other, &extract_summary/1) |> Enum.into(MapSet.new)
-
-    %{same: MapSet.intersection(user_classes, other_classes)}
-  end
-
-  defp extract_summary(%{summary: summary}) do
-    [department, class, _] = String.split(summary)
-    "#{department} #{class}"
+    Processor.compare(FindFreeProcessor, user, other, [weekday: weekday])
   end
 end
 

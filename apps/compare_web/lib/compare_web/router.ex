@@ -9,6 +9,7 @@ defmodule CompareWeb.Router do
     pipe_through :api
 
     post "/upload", ComparisonController, :upload
-    post "/compare", ComparisonController, :compare
+    post "/compare", ComparisonController, :same
+    post "/free", ComparisonController, :free
   end
 end
