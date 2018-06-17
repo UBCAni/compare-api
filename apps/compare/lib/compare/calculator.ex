@@ -29,10 +29,11 @@ defmodule Compare.Calculator do
 
   @spec create_free_block(interval, accumulator) :: accumulator
   defp create_free_block({event_start, event_end}, {result, last}) do
+    latest_date = date_max(event_end, last)
     unless after?(Time.add(last, 3600, :second), event_start) do
-      {[{last, event_start} | result], date_max(event_end, last)}
+      {[{last, event_start} | result], latest_date}
     else
-      {result, event_end}
+      {result, latest_date}
     end
   end
 
