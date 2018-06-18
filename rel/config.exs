@@ -45,7 +45,7 @@ end
 # will be used by default
 
 release :compare_umbrella do
-  set version: "0.3.2"
+  set version: "0.3.4"
   set applications: [
     :runtime_tools,
     compare: :permanent,

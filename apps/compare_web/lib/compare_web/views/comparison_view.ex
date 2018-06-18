@@ -10,6 +10,14 @@ defmodule CompareWeb.ComparisonView do
   end
 
   def render("free.json", %{blocks: blocks, start_time: start_time, end_time: end_time}) do
-    %{"blocks" => blocks |> Enum.map(fn {s, e} -> "#{s} - #{e}" end) |> Enum.reverse(), "start" => start_time, "end" => end_time}
+    %{
+      "blocks" => blocks |> Enum.map(fn {s, e} -> "#{visualize(s)} - #{visualize(e)}" end) |> Enum.reverse(),
+      "start" => visualize(start_time),
+      "end" => visualize(end_time)}
+  end
+
+  @spec visualize(Time.t) :: String.t
+  defp visualize(date) do
+    "#{String.pad_leading("#{date.hour}", 2, "0")}:#{String.pad_leading("#{date.minute}", 2, "0")}"
   end
 end
